@@ -1,0 +1,219 @@
+﻿@model ehrmadesimple.Models.Client
+
+<!DOCTYPE html>
+<html>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2><b>@Html.DisplayFor(model=> model.FirstName) @Html.DisplayFor(model=> model.LastName)</b> - <small>Joined since @Html.DisplayFor(model=>model.FirstJoined)</small></h2> 
+        <a class="goback" asp-action="Index">< Go Back</a>
+    </div>
+</div>
+<hr>
+<div class="wrapper wrapper-content animated fadeInRight row">
+    <div class="col-lg-9 col-md-12 col-sm-12 col-12">
+        <div class="ibox ">
+            <div class="no-padding">
+                <div class="summernote"></div>
+                <button class="btn btn-primary " type="button" onclick="save()"><i class="fa fa-check"></i>&nbsp;Submit</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 d-none d-xl-block">
+        <div class="ibox ">
+            <div class="ibox-title">
+                <h5>Billing Overview</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content" id="billing-ibox"></div>
+        </div>
+    </div>
+    <div class="table-responsive col-lg-9 col-md-12 col-sm-12 col-12">
+        <table id="thetable" class="table table-striped">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <div class="col-lg-3 d-none d-xl-block">
+        <div class="ibox">
+            <div class="ibox-title">
+                <h5>Client Info</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content" id="client-ibox"></div>
+        </div>
+    </div>
+</div>
+@section Styles {
+    <environment names="Development,Staging,Production">
+        <link rel="stylesheet" href="~/lib/summernote/summernote-bs4.css" />
+    </environment>
+
+}
+
+@section Scripts {
+    <environment names="Development,Staging,Production">
+        <script src="~/lib/summernote/summernote-bs4.js"></script>
+        <script src="~/lib/moment/moment.js"></script>
+    </environment>
+
+    <script type="text/javascript">
+        // onInit function
+        $(document).ready(function () { 
+            populateTable();
+            createSummerNote();
+            populateClientIbox();
+        });
+        var url = "/api/appointments/" + '@Model.ClientId';
+        /*
+        *   function: createSummerNote
+        *   call this function at init 
+        */
+        function createSummerNote() {
+                $('.summernote').summernote({
+                    placeholder: 'Add Chart Note:',
+                    toolbar:[
+                    ['style', ['bold', 'italic']],
+                    ['fontsize', ['fontsize']],
+                    ['para', ['ul', 'ol', 'paragraph']]],
+                });
+        }
+        /*
+        *   function: populateTable
+        *   call this function when initializing view and also refresh view after post api call
+        */
+        function populateTable() {
+            $.ajax({
+                url: this.url,
+                method: "get",
+                success: function(res) {
+                    var appointments = new Array();
+                    var unordered_map = new Map(); // unordered_map<time, row_item[]>, where row_item is an appointment or session
+                    for(var i = 0; i < res.length; i++) {
+                        var key = moment(res[i].timestamp).format("MM-DD-YYYY");
+                        if (!unordered_map[key]) { unordered_map[key] = []; }
+                        let appointment = {date: moment(res[i].timestamp).format("MMM DD"), unix_time: moment(res[i].timestamp).format("X"),time: moment(res[i].timestamp).format("hh:mm"), upperBoundTime: moment(res[i].timestamp).add(res[i].duration, 'minutes').format("hh:mm A"), appointmentId: res[i].appointmentId, serviceType: res[i].serviceType, progressNote: res[i].progressNote, psychoNote: res[i].psychoNote}
+                        unordered_map[key].push(appointment);
+                    }
+                    let url = "/api/sessions/" + '@Model.ClientId';
+                    $.ajax({
+                        url: url,
+                        method: "get",
+                        success: function(res) {
+                            var sessions = new Array();
+                            for(var i = 0; i < res.length; i++) {
+                                var key = moment(res[i].timestamp).format("MM-DD-YYYY");
+                                if (!unordered_map[key]) { unordered_map[key] = []; }
+                                let session = {date: moment(res[i].timestamp).format("MMM DD"), unix_time: moment(res[i].timestamp).format("X"), time: moment(res[i].timestamp).format("hh:mm A"), noteType: res[i].noteType, diagnosis: res[i].diagnosis, treatmentPlan: res[i].treatmentPlan, chartNote: res[i].chartNote};
+                                unordered_map[key].push(session);
+                            }
+                            const ordered_map = {};
+                            Object.keys(unordered_map).sort().reverse().forEach(function(key) {
+                            ordered_map[key] = unordered_map[key];
+                            });
+
+                            $('#thetable tr').not(':first').not(':last').remove();
+                            let html = '';
+                            for (const [key, value] of Object.entries(ordered_map)) {
+                                value.sort(function(a, b){return parseInt(b.unix_time)-parseInt(a.unix_time)});
+                                html += '<tr><td style = width:100px;>' + key + '</td>';
+                                for(i = 0; i < value.length; i++) {
+                                    if(i != 0) {
+                                        html += '<tr><td></td>';
+                                    }
+                                    //display appointment values
+                                    if(value[i].noteType == null) {
+                                        html += '<div><td><a href="/Appointments/Details/' + value[i].appointmentId + '"><b><h3 style="padding:0px; margin:0px;">' + "Appointment" + '</h3></b></a><small>' + value[i].serviceType + '</small><br><br>';
+                                        if(value[i].progressNote != '' && value[i].progressNote != null) {
+                                            html += '<h4>'+"Progress Note"+'</h4>' + value[i].progressNote + '<br><br>';
+                                        }
+                                        if(value[i].psychoNote != '' && value[i].psychoNote != null) {
+                                            html += '<h4>' + "Psychotherapy Note" + '</h4>' + value[i].psychoNote + '<br><br>';
+                                        }
+                                        
+                                        html += '</td></div><td>' + value[i].time + " - " + value[i].upperBoundTime + '</td></tr>';
+                                    }
+                                    //display session values
+                                    else {
+                                        if(value[i].noteType == "Diagnosis") {
+                                            html+= '<div><td><b><h3>' + value[i].noteType + '</h3></b><br>' + value[i].diagnosis +'<br>';
+                                        }
+                                        else if(value[i].noteType == "Chart Note") {
+                                            html+= '<div><td><b><h3>' + value[i].noteType + '</h3></b><br>' + value[i].chartNote + '<br>';
+                                        }
+                                        html+= '</td></div><td>' + value[i].time + '</td></tr>'
+                                    }
+                                }
+                                html+='</tr>';
+                            }
+                            html+= '<tr><td></td><td><br><small>' + "No more items to show" + "</small></td><td></td></tr>";
+                            $('#thetable tr').first().after(html);
+                        }
+                    })
+                },
+            });
+        }
+
+        function populateBillingIbox() {
+            let html='';
+        }
+        function populateClientIbox() {
+            let url = '/api/clientinfoes/' + '@Model.ClientId';
+            $.ajax({
+                url: url,
+                method: "get",
+                success: function(res) {    
+                    let html='<dl class="row">';
+                    html += '<dt class="col-sm-3">' + "Phone" + '</dt><dd class="col-sm-9">' + '@Model.Phone' + '</dd>'
+                            + '<dt class="col-sm-3">' + "Address" + '</dt><dd class="col-sm-9">' + res.street + '<br>' + res.city +'&nbsp;'+ res.state + '&nbsp;' + res.zip + '</dd>'
+                            + '<dt class="col-sm-3">' + "Email" + '</dt><dd class="col-sm-9">' + '@Model.Email' + '</dd>'
+                            + '<dt class="col-sm-12"><hr></dt>'
+                            + '<dt class="col-sm-10" style="padding-top:20px; padding-bottom:10px"><i>' + "Emergency Contact" + '</i></dt>' 
+                            + '<dt></dt><dd class="col-sm-12">' +  res.emergencyRelationship + '</dd>'
+                            + '<dt class="col-sm-3">' + "Name" + '</dt><dd class="col-sm-9">' + res.emergencyFname + '&nbsp;' + res.emergencyLname + '</dd>'
+                            + '<dt class="col-sm-3">' + "Phone" + '</dt><dd class="col-sm-9">' + res.emergencyPhone
+                            + '<dt class="col-sm-3">' + "Email" + '</dt><dd class="col-sm-9">' + res.emergencyEmail;
+                    $('#client-ibox').append(html);                        
+                }
+            })            
+        }
+        
+
+        function save() {
+            let markup = $('.summernote').summernote('code');
+            let text = markup.replace(/<\/?[^>]+(>|$)/g, "");
+            $('.summernote').summernote('reset');
+            let url = "/api/sessions/";
+            let time = new Date();
+            let req = JSON.stringify({"ClientId": '@Model.ClientId', "noteType": "Chart Note", "chartNote": text}); 
+            $.ajax({
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                url: url,
+                method: "post",
+                data: req,
+                dataType: 'json',
+            });
+            populateTable();
+        };
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+}
+</html>

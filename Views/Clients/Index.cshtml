@@ -1,0 +1,161 @@
+﻿@model IEnumerable<ehrmadesimple.Models.Client>
+@{
+    ViewData["Title"] = "Clients";
+}
+<!DOCTYPE html>
+<html>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2><b>Clients</b></h2>
+    </div>
+</div>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <div class="row">
+                            <div class="input-group col-lg-6 col-sm-8">
+                                @using (Html.BeginForm())
+                                {
+                                    <p>
+                                        Find by Name: @Html.TextBox("SearchString")  
+                                        <input type="submit" value="Search" /></p>
+                                }
+                            </div>
+                            <div class="col-lg-4 col-sm-4 m-b-xs">
+                            <p>Sort by</p>
+                                <label class="btn btn-sm btn-white">@Html.ActionLink("Last Name", "Index", new { sortOrder = ViewBag.NameSortParm })</label>
+                                <label class="btn btn-sm btn-white">@Html.ActionLink("Enrollment Date", "Index", new { sortOrder = ViewBag.DateSortParm })</label>
+                            </div>
+                        </div>
+                </div>
+                <div class="ibox-content">
+
+                    <div class="table-responsive">
+                        
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Clients </th>
+                                    <th>Contact Info </th>
+                                    @* <th></th> *@
+                                    <th>Clinician </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model) {
+                                    <tr>
+                                        <td>
+                                            <a asp-action="Details" asp-route-id="@item.ClientId">
+                                            @Html.DisplayFor(modelItem => item.FirstName)
+                                            @Html.DisplayFor(modelItem => item.LastName)
+                                            </a>
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Phone)
+                                        </td>
+                                        <td>Dr. Stewart</td>
+                                        <td>
+                                            <a asp-action="Edit" asp-route-id="@item.ClientId">Edit</a> |
+                                            <a onclick="deleteClient('@item.ClientId')" style="color:red;">Delete</a>
+                                        </td>
+                                    </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/lib/iCheck/custom.css" />
+    <link rel="stylesheet" href="~/lib/sweetalert/dist/sweetalert.css" />
+}
+
+@section Scripts {
+    <environment names="Development">
+        <script src="~/lib/iCheck/icheck.min.js"></script>
+        <script src="~/lib/peity/jquery.peity.js"></script>
+        <script src="~/lib/sweetalert/dist/sweetalert-dev.js"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="~/lib/iCheck/icheck.min.js"></script>
+        <script src="~/lib/peity/jquery.peity.min.js"></script>
+        <script src="~/lib/sweetalert/dist/sweetalert-dev.js"></script>
+    </environment>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+
+            $("span.pie").peity("pie", {
+                fill: ['#1ab394', '#d7d7d7', '#ffffff']
+            })
+
+            $(".line").peity("line", {
+                fill: '#1ab394',
+                stroke: '#169c81',
+            })
+
+            $(".bar").peity("bar", {
+                fill: ["#1ab394", "#d7d7d7"]
+            })
+
+            $(".bar_dashboard").peity("bar", {
+                fill: ["#1ab394", "#d7d7d7"],
+                width: 100
+            })
+
+            var updatingChart = $(".updating-chart").peity("line", { fill: '#1ab394', stroke: '#169c81', width: 64 })
+
+            setInterval(function () {
+                var random = Math.round(Math.random() * 10)
+                var values = updatingChart.text().split(",")
+                values.shift()
+                values.push(random)
+
+                updatingChart
+                    .text(values.join(","))
+                    .change()
+            }, 1000);
+
+        });
+        var deleteClient = function(clientId) {
+                swal({
+                    title: "Are you sure?",
+                    text: "All data related to this client will be deleted",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Yes, delete it",
+                    cancelButtonText: "No, cancel",
+                    closeOnConfirm: false,
+                    closeOnCancel: false
+                },
+                    function (isConfirm) {
+                        if (isConfirm) {
+                            swal("Deleted!", "Client was deleted successfully.", "success");
+                            let url = "/api/Clients/" + clientId;
+                            $.ajax({
+                                url: url,
+                                method: "delete",
+                            });
+                        } else {
+                            swal("Cancelled", "Action was cancelled succesfully", "error");
+                        }
+                    });
+        }
+    </script>
+}
+</html>

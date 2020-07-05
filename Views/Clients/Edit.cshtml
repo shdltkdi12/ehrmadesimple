@@ -1,0 +1,77 @@
+﻿@model ehrmadesimple.Models.Client
+
+@{
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Edit</title>
+</head>
+<body>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2><b>Edit <i>Basic Info - @Html.DisplayFor(model=>model.FirstName) @Html.DisplayFor(model=>model.LastName)</i></b></h2>
+        <a class="goback" asp-action="Index">< Go Back</a>
+    </div>
+</div>
+<ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" href="#">Basic Info</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" href="/ClientInfoes/Edit/@Model.ClientId">Address & Emergency Contact</a>
+        </li>
+</ul>
+<div class="wrapper wrapper-content animated fadeInRight">
+    
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Email" />
+                <div class="form-group">
+                    <label asp-for="FirstName" class="control-label"></label>
+                    <input asp-for="FirstName" class="form-control" />
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="LastName" class="control-label"></label>
+                    <input asp-for="LastName" class="form-control" />
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Email" class="control-label"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Phone" class="control-label"></label>
+                    <input asp-for="Phone" class="form-control" />
+                    <span asp-validation-for="Phone" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="BillingType" class="control-label"></label>
+                    <input asp-for="BillingType" class="form-control" />
+                    <span asp-validation-for="BillingType" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+}
+</body>
+</html>

@@ -1,0 +1,122 @@
+﻿@model ehrmadesimple.Models.ClientInfo
+
+@{
+}
+
+<!DOCTYPE html>
+
+<html>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2><b>Edit <i>Address & Emergency Contact - @Html.DisplayFor(model=> model.FullName)</i> </b></h2> 
+        <a asp-action="Index" asp-controller="Clients" class="goback">< Go Back</a>
+    </div>
+</div>
+<body>
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a class="nav-link active" href="/Clients/Edit/@Model.ClientId">Basic Info</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link active" href="#">Address & Emergency Contact</a>
+    </li>
+</ul>
+<div class="wrapper wrapper-content animated fadeInRight">
+<div class="row">
+    <div class="col-md-4">
+        
+        <form asp-action="Edit">
+            <br>
+            <div class="form-group">
+                <label asp-for="Street" class="control-label"></label>
+                <input asp-for="Street" class="form-control" />
+                <span asp-validation-for="Street" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="City" class="control-label"></label>
+                <input asp-for="City" class="form-control" />
+                <span asp-validation-for="City" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="State" class="control-label"></label>
+                <input asp-for="State" class="form-control" />
+                <span asp-validation-for="State" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Zip" class="control-label"></label>
+                <input asp-for="Zip" class="form-control" />
+                <span asp-validation-for="Zip" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BdayMonth" class="control-label"></label>
+                <input asp-for="BdayMonth" class="form-control" />
+                <span asp-validation-for="BdayMonth" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BdayDay" class="control-label"></label>
+                <input asp-for="BdayDay" class="form-control" />
+                <span asp-validation-for="BdayDay" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BdayYear" class="control-label"></label>
+                <input asp-for="BdayYear" class="form-control" />
+                <span asp-validation-for="BdayYear" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Sex" class="control-label"></label>
+                <input asp-for="Sex" class="form-control" />
+                <span asp-validation-for="Sex" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RelationshipStatus" class="control-label"></label>
+                <input asp-for="RelationshipStatus" class="form-control" />
+                <span asp-validation-for="RelationshipStatus" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EmploymentStatus" class="control-label"></label>
+                <input asp-for="EmploymentStatus" class="form-control" />
+                <span asp-validation-for="EmploymentStatus" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EmergencyFname" class="control-label"></label>
+                <input asp-for="EmergencyFname" class="form-control" />
+                <span asp-validation-for="EmergencyFname" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EmergencyLname" class="control-label"></label>
+                <input asp-for="EmergencyLname" class="form-control" />
+                <span asp-validation-for="EmergencyLname" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EmergencyRelationship" class="control-label"></label>
+                <input asp-for="EmergencyRelationship" class="form-control" />
+                <span asp-validation-for="EmergencyRelationship" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EmergencyEmail" class="control-label"></label>
+                <input asp-for="EmergencyEmail" class="form-control" />
+                <span asp-validation-for="EmergencyEmail" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EmergencyPhone" class="control-label"></label>
+                <input asp-for="EmergencyPhone" class="form-control" />
+                <span asp-validation-for="EmergencyPhone" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+
+@section Scripts {
+@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>
+}
+</body>
+</html>

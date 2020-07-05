@@ -1,0 +1,73 @@
+﻿@model IEnumerable<ehrmadesimple.Models.Session>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Timestamp)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Diagnosis)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProgressNote)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PsychoNote)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Appointment)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Client)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Timestamp)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Diagnosis)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProgressNote)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PsychoNote)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Appointment.Clientname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Client.ClientId)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.RowNumber">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.RowNumber">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.RowNumber">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+</body>
+</html>

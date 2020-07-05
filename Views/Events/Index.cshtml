@@ -1,0 +1,89 @@
+﻿@model IEnumerable<ehrmadesimple.Models.Event>
+
+@{
+    ViewData["Title"] = "Account Activity";
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2><b>Account Activity</b></h2>
+    </div>
+</div>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="table-responsive col-lg-12">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Date </th>
+                    <th>Time</th>
+                    <th>Event </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Today</td>
+                    <td>12:00 (CDT)</td>
+                    <td>You created the whole schema</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/lib/iCheck/custom.css" />
+}
+
+@section Scripts {
+    <environment names="Development">
+        <script src="~/lib/iCheck/icheck.min.js"></script>
+        <script src="~/lib/peity/jquery.peity.js"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="~/lib/iCheck/icheck.min.js"></script>
+        <script src="~/lib/peity/jquery.peity.min.js"></script>
+    </environment>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+
+            $("span.pie").peity("pie", {
+                fill: ['#1ab394', '#d7d7d7', '#ffffff']
+            })
+
+            $(".line").peity("line", {
+                fill: '#1ab394',
+                stroke: '#169c81',
+            })
+
+            $(".bar").peity("bar", {
+                fill: ["#1ab394", "#d7d7d7"]
+            })
+
+            $(".bar_dashboard").peity("bar", {
+                fill: ["#1ab394", "#d7d7d7"],
+                width: 100
+            })
+
+            var updatingChart = $(".updating-chart").peity("line", { fill: '#1ab394', stroke: '#169c81', width: 64 })
+
+            setInterval(function () {
+                var random = Math.round(Math.random() * 10)
+                var values = updatingChart.text().split(",")
+                values.shift()
+                values.push(random)
+
+                updatingChart
+                    .text(values.join(","))
+                    .change()
+            }, 1000);
+
+        });
+    </script>
+}
+

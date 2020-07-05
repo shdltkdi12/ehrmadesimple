@@ -1,0 +1,139 @@
+﻿@model IEnumerable<ehrmadesimple.Models.ClientInfo>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ClientEmail)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Street)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.City)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.State)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Zip)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BdayMonth)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BdayDay)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BdayYear)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Sex)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.RelationshipStatus)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EmploymentStatus)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EmergencyFname)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EmergencyLname)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EmergencyRelationship)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EmergencyEmail)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EmergencyPhone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Client)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ClientEmail)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Street)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.City)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.State)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Zip)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BdayMonth)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BdayDay)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BdayYear)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Sex)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RelationshipStatus)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EmploymentStatus)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EmergencyFname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EmergencyLname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EmergencyRelationship)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EmergencyEmail)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EmergencyPhone)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Client.ClientId)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ClientInfoId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.ClientInfoId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.ClientInfoId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+</body>
+</html>

@@ -1,0 +1,117 @@
+﻿
+@{
+    ViewData["Title"] = "Invoice";
+}
+<!DOCTYPE html>
+<html>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-8">
+        <h2><b>Invoice</b></h2>
+        <a onclick='goBack()'>< Go Back</a>
+    </div>
+    <div class="col-lg-4">
+        <div class="title-action">
+            <button type="button" class="btn btn-outline btn-danger">Delete</button>
+            <a href="#" class="btn btn-white"><i class="fa fa-pencil"></i> Edit </a>
+            <a onclick='printInvoice()' class="btn btn-primary" style="color:white"><i class="fa fa-download"></i> Download PDF</a>
+            
+        </div>
+    </div>
+</div>
+<div class="wrapper wrapper-content animated fadeInRight" >
+    <div class="ibox-content p-xl">
+        <div class="row">
+            <div class="col-sm-6">
+                <h5>From:</h5>
+                <address>
+                    <strong>Lawry Therapy and Counseling</strong><br>
+                    248 East Glenn Avenue<br>
+                    Auburn, AL 36830<br>
+                    <abbr title="Phone">P:</abbr> (334) 821-3350
+                </address>
+            </div>
+
+            <div class="col-sm-6 text-right">
+                <h4>Invoice ID</h4>
+                <h4 class="text-navy">@Model.BillId</h4>
+                <span>To:</span>
+                <address class="client-info">
+                </address>
+                <p class="invoice-date">
+                </p>
+            </div>
+        </div>
+
+        <div class="table-responsive m-t">
+            <table id="thetable" class="table invoice-table">
+                <thead>
+                    <tr>
+                        <th>Item List</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div><!-- /table-responsive -->
+
+        <table class="table invoice-total">
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div style="padding-bottom:20px;"></div>
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script>
+        populateClientInfo();
+        populateInvoiceDate();
+        populateTable();
+        populateInvoiceTotal();
+        function printInvoice() {
+            var restorepage = $('body').html();
+            var printcontent = $('.ibox-content').clone();
+            $('body').empty().html(printcontent);
+            window.print();
+            $('body').html(restorepage);
+        }
+        function populateTable() {
+            $('#thetable tr').not(':first').not(':last').remove();
+            let fee = new Number('@Model.Fee').toFixed(2);
+            let html = '';
+            html += '<tr style="text-align:right;"><td style="text-align:left !important;"><div><strong>' + "General Therapy" + '</div></strong></td><td>' + 1 + '</td><td>' + fee + '</td></tr>';
+            $('#thetable tr').first().after(html);
+        }
+        function populateInvoiceTotal() {
+            let html='';
+            let fee = new Number('@Model.Fee').toFixed(2);
+            let fee_tax = new Number(fee * 0.091).toFixed(2);
+            let total = (new Number(fee * 0.091) + new Number(fee)).toFixed(2);
+            html += '<tr><td><strong>' + "Tax :" + '</strong></td><td>' + fee_tax + '</tr><tr><td><strong>' + "Total :" +'</strong></td><td>'+ total + '</td></tr>';
+            $('.invoice-total').append(html);
+        }
+        function populateClientInfo() {
+            let url = "/api/ClientInfoes/" + '@Model.ClientId';
+            $.ajax({
+                url: url,
+                method: "get",
+                success: function(res) {
+                    let html = '';
+                    html += '<strong>' + res.fullName + '</strong><br>' + res.street + '<br>' + res.city + ", " + res.state + ", " + res.zip + '<br>'+ "Phone: 334-734-9478";
+                    $('.client-info').append(html);
+                }
+            });
+        }
+        function populateInvoiceDate() {
+            let html = '';
+            let date = '@Model.Timestamp'.substring(0,9);
+            html += '<span><strong>' + "Invoice Date: " + '</strong>' + date + '</span><br/><span>';
+            $('.invoice-date').append(html);
+        }
+        function goBack() {
+            window.history.back();
+        }
+    </script>
+}
+</html>

@@ -1,0 +1,41 @@
+﻿<nav class="navbar-default navbar-static-side" role="navigation">
+    <div class="sidebar-collapse">
+        <ul class="nav metismenu" id="side-menu">
+            <li class="nav-header">
+                <div class="dropdown profile-element">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                        <span class="block m-t-xs font-bold">Isaiah Roh</span>
+                    </a>
+                    <ul class="dropdown-menu animated fadeInRight m-t-xs" style="position: absolute; top: 91px; left: 0px; will-change: top, left;">
+                        <li><a class="dropdown-item" href="@Url.Action("Profile", "AppViews")">Profile</a></li>
+                        <li><a class="dropdown-item" href="@Url.Action("Contacts", "AppViews")">Contacts</a></li>
+                        <li><a class="dropdown-item" href="@Url.Action("Inbox", "Mailbox")">Mailbox</a></li>
+                        <li class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="@Url.Action("Login", "Pages")">Logout</a></li>
+                    </ul>
+                </div>
+                <div class="logo-element">
+                    EMS
+                </div>
+            </li>
+            <li class="@Html.IsSelected(controller: "Appointments")">
+                <a href="@Url.Action("Index", "Appointments")"><i class="fa fa-calendar"></i> <span class="nav-label" data-i18n="nav.calendar">Calendar</span> </a>                
+            </li>
+            <li class="@Html.IsSelected(controller: "Clients")">
+                <a href="@Url.Action("Index", "Clients")"><i class="fa fa-users"></i> <span class="nav-label" data-i18n="nav.tables">Clients</span></a>               
+            </li>
+            <li class="@Html.IsSelected(controller: "Bills")">
+                <a href="@Url.Action("Index", "Bills")"><i class="fa fa-credit-card"></i> <span class="nav-label" data-i18n="nav.tables">Billing</span></a>               
+            </li>
+            <li class="@Html.IsSelected(controller: "Dashboards")">
+                <a href="@Url.Action("Index", "Dashboards")"><i class="fa fa-bar-chart"></i> <span class="nav-label" data-i18n="nav.tables">Overview</span></a>               
+            </li>
+            <li class="@Html.IsSelected(controller: "Events")">
+                <a href="@Url.Action("Index", "Events")"><i class="fa fa-feed"></i> <span class="nav-label" data-i18n="nav.tables">Account Activity</span></a>               
+            </li>
+            <li class="special_link @Html.IsSelected(controller: " Landing")">
+                <a href="@Url.Action("Index", "Landing")"><i class="fa fa-star"></i> <span class="nav-label" data-i18n="nav.landing">Landing page</span></a>
+            </li> 
+        </ul>
+    </div>
+</nav>

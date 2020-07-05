@@ -1,0 +1,192 @@
+﻿@model ehrmadesimple.Models.Appointment
+
+<!DOCTYPE html>
+<html>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2><b>Appointment</b></h2>
+        <a class="goback" href="/Clients/Details/@Model.ClientId">< Go Back</a>
+    </div>
+</div>
+<div class="wrapper wrapper-content animated fadeInRight row" style= "padding-left:20px !important;">
+    <dl class="row">
+        <dt class = "col-sm-2" style="padding-bottom:10px;">
+            <a href= '@Url.Action("Details", "Bills", new {id = @Model.BillId})'>Review Invoice</a>    
+        </dt>
+        <dd class = "col-sm-10">
+             
+        </dd>
+        <dt class = "col-sm-2">
+            Service
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ServiceType)
+        </dd>
+        <dt class = "col-sm-2">
+            Time
+        </dt>
+        <dd id= "time" class = "col-sm-10">
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Duration)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Duration)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Location)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Location)
+        </dd>
+        <dt class = "col-sm-2">
+            Diagnosis
+        </dt>
+    </dl>
+    <div class="col-lg-9" style="padding-left:0">
+        <br>
+        <b>Progress Note</b> &nbsp;
+        <a onclick="edit1()" style="color:#007bff">Edit</a> |
+        <a onclick="save1()" style="color:#007bff">Save</a>
+        <br><br>
+        <div class="no-padding col-10" style="width:600px;">
+            <div id="ibox1" class="ibox"></div>
+            <div class="textarea1" ></div>
+        </div>
+    </div>
+    <br>
+    <hr>
+    <div class="col-lg-9" style="padding-left:0">
+        <b>Psychotheraphy Note</b> &nbsp;
+        <a onclick="edit2()" style="color:#007bff">Edit</a> |
+        <a onclick="save2()" style="color:#007bff">Save</a>
+        <br><br>
+        <div class="no-padding col-10" style="width:600px;">
+            <div id="ibox2" class="ibox"></div>
+            <div class="textarea2"></div>                
+        </div>
+    </div>
+    <div class="col-lg-9" style="padding-left:0;">
+        <h4><b>Attachments</b></h4>
+        <br>
+        <form action="#" class="dropzone" id="dropzoneForm" style="width:200px;">
+            <div class="fallback">
+                <input name="file" type="file" multiple />
+            </div>
+        </form> 
+    </div>
+</div>
+
+<br>
+@section Styles {
+    <environment names="Development,Staging,Production">
+        <link rel="stylesheet" href="~/lib/dropzone/basic.css" />
+        <link rel="stylesheet" href="~/lib/dropzone/dropzone.css" />
+        <link rel="stylesheet" href="~/lib/summernote/summernote-bs4.css" />
+    </environment>
+
+}
+
+@section Scripts {
+    <environment names="Development,Staging,Production">
+        <script src="~/lib/dropzone/dropzone.js"></script>
+        <script src="~/lib/summernote/summernote-bs4.js"></script>
+        <script src="~/lib/moment/moment.js"></script>
+    </environment>
+    <script type="text/javascript">
+        onInit();
+        Dropzone.options.dropzoneForm = {
+            paramName: "file", // The name that will be used to transfer the file
+            maxFilesize: 2, // MB
+            dictDefaultMessage: "<strong>Drop files here or click to upload. </strong></br>"
+        };
+        $('#time').append(moment('@Model.Timestamp').format('LLL'));
+
+        function onInit() {
+            var html ='<div class="ibox-content col-sm-6">';
+            if('@Model.ProgressNote' != '') {
+                html +=  '<small>@Model.Timestamp' + '</small><br><strong>' + '@Model.ProgressNote' + '</small>';
+            }
+            else {
+                html += "Click Edit to add progress note "
+            }
+            html += '</strong></div>';
+            $('#ibox1').append(html);
+
+            html ='<div class="ibox-content col-sm-6">';
+            if('@Model.PsychoNote' != '') {
+                html += '<small>@Model.Timestamp' + '</small><br><strong>' + '@Model.PsychoNote' + '</small>';
+            }
+            else {
+                html += "Click Edit to add psychotherapy note "
+            }
+            html += '</strong></div>';
+            $('#ibox2').append(html);
+        }
+        
+        var edit1 = function() {
+            $('#ibox1').remove();
+            $('.textarea1').summernote({
+            focus: true,
+            toolbar:[['style', ['bold', 'italic']],
+                ['fontsize', ['fontsize']],
+                ['para', ['ul', 'ol', 'paragraph']]],
+            height: 150});
+        };
+        var edit2 = function() {
+            $('#ibox2').remove();
+            $('.textarea2').summernote({
+            focus: true,
+            toolbar:[['style', ['bold', 'italic']],
+                ['fontsize', ['fontsize']],
+                ['para', ['ul', 'ol', 'paragraph']]],
+            height: 150});
+        };
+        var save1 = function() {
+            let markup = $('.textarea1').summernote('code');
+            let text = markup.replace(/<\/?[^>]+(>|$)/g, "");
+            $('.textarea1').summernote('destroy');
+            let url = "/api/appointments/" + '@Model.AppointmentId';
+            let time = new Date();
+            let body = JSON.stringify({"Clientname": '@Model.Clientname', "PsychoNote": '@Model.PsychoNote', "ProgressNote": text}); 
+            $.ajax({
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                url: url,
+                method: "PUT",
+                data: body,
+                dataType: 'json',
+            });
+        };
+        var save2 = function() {
+            let markup = $('.textarea2').summernote('code');
+            let text = markup.replace(/<\/?[^>]+(>|$)/g, "");
+            $('.textarea2').summernote('destroy');
+            let url = "/api/appointments/" + '@Model.AppointmentId';
+            let time = new Date();
+            let body = JSON.stringify({"Clientname": '@Model.Clientname', "PsychoNote": text, "ProgressNote": '@Model.ProgressNote'}); 
+            $.ajax({
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                url: url,
+                method: "PUT",
+                data: body,
+                dataType: 'json',
+            });
+        };
+        $(document).ready(function () {
+            $('.note2').summernote({
+                placeholder: '@Model.PsychoNote',
+                toolbar:[
+                ['style', ['bold', 'italic']],
+                ['fontsize', ['fontsize']],
+                ['para', ['ul', 'ol', 'paragraph']]],
+                height:150
+            });
+        });
+
+    </script>
+}
+</html>
